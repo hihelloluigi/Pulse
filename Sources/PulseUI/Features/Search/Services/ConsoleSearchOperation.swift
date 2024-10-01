@@ -218,7 +218,7 @@ package final class ConsoleSearchService {
         cache.removeAllObjects()
     }
 
-    package func getBodyString(for blob: LoggerBlobHandleEntity) -> String? {
+    package func getBodyString(for blob: LALoggerBlobHandleEntity) -> String? {
         if let string = cache.object(forKey: blob.objectID)?.value {
             return string
         }

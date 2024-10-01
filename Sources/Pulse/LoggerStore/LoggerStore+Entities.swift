@@ -87,9 +87,9 @@ public final class NetworkTaskEntity: NSManagedObject {
     @NSManaged var rawMetadata: String?
 
     /// The request body handle.
-    @NSManaged public var requestBody: LoggerBlobHandleEntity?
+    @NSManaged public var requestBody: LALoggerBlobHandleEntity?
     /// The response body handle.
-    @NSManaged public var responseBody: LoggerBlobHandleEntity?
+    @NSManaged public var responseBody: LALoggerBlobHandleEntity?
     /// The size of the request body.
     @NSManaged public var requestBodySize: Int64
     /// The size of the response body.
@@ -271,7 +271,7 @@ public final class NetworkResponseEntity: NSManagedObject {
 }
 
 /// Doesn't contain any data, just the key and some additional payload.
-public final class LoggerBlobHandleEntity: NSManagedObject {
+public final class LALoggerBlobHandleEntity: NSManagedObject {
     /// A blob hash (sha1, stored in a binary format).
     @NSManaged public var key: Data
 
@@ -323,7 +323,7 @@ public final class LoggerBlobHandleEntity: NSManagedObject {
     /// on any thread.
     ///
     /// - warning: Not meant to be used outside of the framework.
-    public static func getData(for entity: LoggerBlobHandleEntity, store: LoggerStore) -> () -> Data? {
+    public static func getData(for entity: LALoggerBlobHandleEntity, store: LoggerStore) -> () -> Data? {
         let inlineData = entity.inlineData
         let key = entity.key
         let isCompressed = !entity.isUncompressed

@@ -207,7 +207,7 @@ extension HARDocument.Entry {
         let size: Int
         var text: String = ""
 
-        init?(_ entity: LoggerBlobHandleEntity?) {
+        init?(_ entity: LALoggerBlobHandleEntity?) {
             if let entity {
                 compression = Int(entity.size - entity.decompressedSize)
                 encoding = ""

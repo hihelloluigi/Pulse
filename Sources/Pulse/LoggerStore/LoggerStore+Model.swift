@@ -20,7 +20,7 @@ extension LoggerStore {
         let request = Entity(class: NetworkRequestEntity.self)
         let response = Entity(class: NetworkResponseEntity.self)
         let transaction = Entity(class: NetworkTransactionMetricsEntity.self)
-        let blob = Entity(class: LoggerBlobHandleEntity.self)
+        let blob = Entity(class: LALoggerBlobHandleEntity.self)
 
         session.properties = [
             Attribute("id", .UUIDAttributeType),

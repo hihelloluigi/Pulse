@@ -271,7 +271,7 @@ package final class TextRenderer {
         TextRendererJSON(json: json, error: error, options: options).render()
     }
 
-    package func render(_ blob: LoggerBlobHandleEntity, _ data: Data, contentType: NetworkLogger.ContentType?, error: NetworkLogger.DecodingError?) -> NSAttributedString {
+    package func render(_ blob: LALoggerBlobHandleEntity, _ data: Data, contentType: NetworkLogger.ContentType?, error: NetworkLogger.DecodingError?) -> NSAttributedString {
         let string = render(data, contentType: contentType, error: error)
         renderedBodies[blob.objectID] = string
         return string

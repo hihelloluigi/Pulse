@@ -115,9 +115,9 @@ extension URL {
 }
 
 package struct LoggerBlogDataStore {
-    package let getDecompressedData: (LoggerBlobHandleEntity) -> Data?
+    package let getDecompressedData: (LALoggerBlobHandleEntity) -> Data?
 
-    package init(_ getDecompressedData: @escaping (LoggerBlobHandleEntity) -> Data?) {
+    package init(_ getDecompressedData: @escaping (LALoggerBlobHandleEntity) -> Data?) {
         self.getDecompressedData = getDecompressedData
     }
 
@@ -127,7 +127,7 @@ package struct LoggerBlogDataStore {
         }
     }
 
-    init(getDecompressedData: @escaping (LoggerBlobHandleEntity) -> Data?) {
+    init(getDecompressedData: @escaping (LALoggerBlobHandleEntity) -> Data?) {
         self.getDecompressedData = getDecompressedData
     }
 

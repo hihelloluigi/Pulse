@@ -628,7 +628,7 @@ extension LoggerStore {
 
     // MARK: - Managing Blobs
 
-    private func storeBlob(_ data: Data, contentType: NetworkLogger.ContentType?) -> LoggerBlobHandleEntity? {
+    private func storeBlob(_ data: Data, contentType: NetworkLogger.ContentType?) -> LALoggerBlobHandleEntity? {
         let data = preprocessData(data, contentType: contentType)
 
         guard !data.isEmpty else {
@@ -639,7 +639,7 @@ extension LoggerStore {
             return nil
         }
         let key = data.sha1
-        let existingEntity = try? backgroundContext.first(LoggerBlobHandleEntity.self) {
+        let existingEntity = try? backgroundContext.first(LALoggerBlobHandleEntity.self) {
             $0.predicate = NSPredicate(format: "key == %@", key as NSData)
         }
         if let entity = existingEntity {
@@ -647,7 +647,7 @@ extension LoggerStore {
             return entity
         }
 
-        let entity = LoggerBlobHandleEntity(context: backgroundContext)
+        let entity = LALoggerBlobHandleEntity(context: backgroundContext)
         entity.key = key
         entity.linkCount = 1
         entity.rawContentType = contentType?.rawValue
@@ -672,7 +672,7 @@ extension LoggerStore {
         return entity
     }
 
-    private func unlink(_ blob: LoggerBlobHandleEntity) {
+    private func unlink(_ blob: LALoggerBlobHandleEntity) {
         blob.linkCount -= 1
         if blob.linkCount == 0 {
             if blob.inlineData == nil {
@@ -686,7 +686,7 @@ extension LoggerStore {
         blobsURL.appending(filename: key)
     }
 
-    func getDecompressedData(for entity: LoggerBlobHandleEntity) -> Data? {
+    func getDecompressedData(for entity: LALoggerBlobHandleEntity) -> Data? {
         getDecompressedData(for: entity.inlineData, key: entity.key, isCompressed: !entity.isUncompressed)
     }
 
@@ -830,7 +830,7 @@ extension LoggerStore {
 
     private func _removeAll() {
         try? deleteEntities(for: LoggerMessageEntity.fetchRequest())
-        try? deleteEntities(for: LoggerBlobHandleEntity.fetchRequest())
+        try? deleteEntities(for: LALoggerBlobHandleEntity.fetchRequest())
         try? deleteEntities(for: LALoggerSessionEntity.fetchRequest())
         saveEntity(for: session, info: .current)
 
@@ -956,7 +956,7 @@ extension LoggerStore {
     /// Moves the blobs from the source store to the `target` store, keeping
     /// only the entities present in the `target` store.
     private func _exportBlobs(to target: LoggerStore) throws {
-        let blobs = try target.backgroundContext.fetch(LoggerBlobHandleEntity.self) {
+        let blobs = try target.backgroundContext.fetch(LALoggerBlobHandleEntity.self) {
             $0.predicate = NSPredicate(format: "inlineData = nil")
         }
         Files.createDirectoryIfNeeded(at: target.blobsURL)
@@ -1131,7 +1131,7 @@ extension LoggerStore {
             $0.predicate = NSPredicate(format: "requestBody != NULL OR responseBody != NULL")
         }
         let targetSize = Int(Double(configuration.blobSizeLimit) * configuration.trimRatio)
-        func _unlink(_ blob: LoggerBlobHandleEntity) {
+        func _unlink(_ blob: LALoggerBlobHandleEntity) {
             unlink(blob)
             currentSize -= Int64(blob.size)
         }
@@ -1148,7 +1148,7 @@ extension LoggerStore {
     }
 
     private func getBlobsSize(in context: NSManagedObjectContext, isDecompressed: Bool = false) throws -> Int64 {
-        let request = LoggerBlobHandleEntity.fetchRequest()
+        let request = LALoggerBlobHandleEntity.fetchRequest()
 
         let description = NSExpressionDescription()
         description.name = "sum"
@@ -1185,7 +1185,7 @@ extension LoggerStore {
 
         let messageCount = try context.count(for: LoggerMessageEntity.self)
         let taskCount = try context.count(for: NetworkTaskEntity.self)
-        let blobCount = try context.count(for: LoggerBlobHandleEntity.self)
+        let blobCount = try context.count(for: LALoggerBlobHandleEntity.self)
 
         return Info(
             storeId: manifest.storeId,
