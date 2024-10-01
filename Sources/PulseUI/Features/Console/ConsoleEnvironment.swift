@@ -62,15 +62,15 @@ final class ConsoleEnvironment: ObservableObject {
         self.filters = ConsoleFiltersViewModel(options: makeDefaultOptions())
 
         self.logCountObserver = ManagedObjectsCountObserver(
-            entity: LoggerMessageEntity.self,
+            entity: LALoggerMessageEntity.self,
             context: store.viewContext,
-            sortDescriptior: NSSortDescriptor(keyPath: \LoggerMessageEntity.createdAt, ascending: false)
+            sortDescriptior: NSSortDescriptor(keyPath: \LALoggerMessageEntity.createdAt, ascending: false)
         )
 
         self.taskCountObserver = ManagedObjectsCountObserver(
-            entity: NetworkTaskEntity.self,
+            entity: LANetworkTaskEntity.self,
             context: store.viewContext,
-            sortDescriptior: NSSortDescriptor(keyPath: \NetworkTaskEntity.createdAt, ascending: false)
+            sortDescriptior: NSSortDescriptor(keyPath: \LANetworkTaskEntity.createdAt, ascending: false)
         )
 
         bind()

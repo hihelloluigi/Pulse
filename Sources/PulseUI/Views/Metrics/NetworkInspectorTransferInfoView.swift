@@ -155,7 +155,7 @@ package struct NetworkInspectorTransferInfoViewModel {
         headersBytesReceived = "–"
     }
 
-    package init(task: NetworkTaskEntity) {
+    package init(task: LANetworkTaskEntity) {
         self.init(transferSize: task.totalTransferSize)
     }
 

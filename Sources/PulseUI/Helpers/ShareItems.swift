@@ -56,12 +56,12 @@ package enum ShareService {
         }
     }
 
-    package static func share(_ message: LoggerMessageEntity, as output: ShareOutput) -> ShareItems {
+    package static func share(_ message: LALoggerMessageEntity, as output: ShareOutput) -> ShareItems {
         let string = TextRenderer(options: .sharing).make { $0.render(message) }
         return share(string, as: output)
     }
 
-    package static func share(_ task: NetworkTaskEntity, as output: ShareOutput, store: LoggerStore) -> ShareItems {
+    package static func share(_ task: LANetworkTaskEntity, as output: ShareOutput, store: LoggerStore) -> ShareItems {
         let string = TextRenderer(options: .sharing).make { $0.render(task, content: .sharing, store: store) }
         return share(string, as: output)
     }

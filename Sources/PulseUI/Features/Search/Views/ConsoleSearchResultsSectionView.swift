@@ -76,7 +76,7 @@ struct ConsoleSearchResultView: View {
     }
 
     @ViewBuilder
-    private static func _makeDestination(for occurrence: ConsoleSearchOccurrence, task: NetworkTaskEntity) -> some View {
+    private static func _makeDestination(for occurrence: ConsoleSearchOccurrence, task: LANetworkTaskEntity) -> some View {
         switch occurrence.scope {
         case .originalRequestHeaders, .currentRequestHeaders, .responseHeaders:
             EmptyView() // Reserved

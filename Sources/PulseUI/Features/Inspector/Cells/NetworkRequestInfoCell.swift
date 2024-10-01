@@ -30,7 +30,7 @@ package final class NetworkRequestInfoCellViewModel {
     package let url: String
     package let render: () -> NSAttributedString
 
-    package init(task: NetworkTaskEntity, store: LoggerStore) {
+    package init(task: LANetworkTaskEntity, store: LoggerStore) {
         self.httpMethod = task.httpMethod ?? "GET"
         self.url = task.url ?? "–"
         self.render = {
@@ -40,7 +40,7 @@ package final class NetworkRequestInfoCellViewModel {
         }
     }
 
-    package init(transaction: NetworkTransactionMetricsEntity) {
+    package init(transaction: LANetworkTransactionMetricsEntity) {
         self.httpMethod = transaction.request.httpMethod ?? "GET"
         self.url = transaction.request.url ?? "–"
         self.render = { TextRenderer(options: .sharing).make { $0.render(transaction) } }

@@ -50,9 +50,9 @@ final class NetworkInspectorRequestBodyViewModel {
         return data
     }
 
-    let task: NetworkTaskEntity
+    let task: LANetworkTaskEntity
 
-    init(task: NetworkTaskEntity) {
+    init(task: LANetworkTaskEntity) {
         self.task = task
     }
 

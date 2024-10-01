@@ -58,10 +58,10 @@ final class ConsoleDataSource: NSObject, NSFetchedResultsControllerDelegate {
 
         switch mode {
         case .all, .logs:
-            entityName = "\(LoggerMessageEntity.self)"
+            entityName = "\(LALoggerMessageEntity.self)"
             sortKey = options.messageSortBy.key
         case .network:
-            entityName = "\(NetworkTaskEntity.self)"
+            entityName = "\(LANetworkTaskEntity.self)"
             sortKey = options.taskSortBy.key
         }
 

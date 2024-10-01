@@ -12,13 +12,13 @@ import CoreData
 package enum ContextMenu {
     @available(iOS 16, visionOS 1, *)
     package struct MessageContextMenu: View {
-        package let message: LoggerMessageEntity
+        package let message: LALoggerMessageEntity
 
         @Binding private(set) package var shareItems: ShareItems?
 
         @EnvironmentObject private var filters: ConsoleFiltersViewModel
 
-        package init(message: LoggerMessageEntity, shareItems: Binding<ShareItems?>) {
+        package init(message: LALoggerMessageEntity, shareItems: Binding<ShareItems?>) {
             self.message = message
             self._shareItems = shareItems
         }
@@ -61,11 +61,11 @@ package enum ContextMenu {
     }
 
     package struct NetworkTaskContextMenuItems: View {
-        let task: NetworkTaskEntity
+        let task: LANetworkTaskEntity
 #if os(iOS) || os(visionOS)
         @Binding private(set) var sharedItems: ShareItems?
 
-        package init(task: NetworkTaskEntity, sharedItems: Binding<ShareItems?>, isDetailsView: Bool = false) {
+        package init(task: LANetworkTaskEntity, sharedItems: Binding<ShareItems?>, isDetailsView: Bool = false) {
             self.task = task
             self._sharedItems = sharedItems
             self.isDetailsView = isDetailsView
@@ -105,7 +105,7 @@ package enum ContextMenu {
     }
 
     struct NetworkTaskFilterMenu: View {
-        let task: NetworkTaskEntity
+        let task: LANetworkTaskEntity
 
         @EnvironmentObject private var environment: ConsoleEnvironment
         @EnvironmentObject private var filters: ConsoleFiltersViewModel
@@ -152,7 +152,7 @@ package enum ContextMenu {
     }
 
     struct NetworkTaskShareMenu: View {
-        let task: NetworkTaskEntity
+        let task: LANetworkTaskEntity
         @Binding var shareItems: ShareItems?
 
         @Environment(\.store) private var store
@@ -177,9 +177,9 @@ package enum ContextMenu {
     }
 
     package struct NetworkTaskCopyMenu: View {
-        let task: NetworkTaskEntity
+        let task: LANetworkTaskEntity
 
-        package init(task: NetworkTaskEntity) {
+        package init(task: LANetworkTaskEntity) {
             self.task = task
         }
 

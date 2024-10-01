@@ -7,14 +7,14 @@ import SwiftUI
 import Pulse
 
 package struct PinView: View {
-    private var message: LoggerMessageEntity?
+    private var message: LALoggerMessageEntity?
     @State private var isPinned = false
 
-    package init(message: LoggerMessageEntity?) {
+    package init(message: LALoggerMessageEntity?) {
         self.message = message
     }
 
-    package init(task: NetworkTaskEntity) {
+    package init(task: LANetworkTaskEntity) {
         self.init(message: task.message)
     }
 

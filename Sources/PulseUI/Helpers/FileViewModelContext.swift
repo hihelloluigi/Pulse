@@ -23,7 +23,7 @@ package struct FileViewerViewModelContext {
     }
 }
 
-extension NetworkTaskEntity {
+extension LANetworkTaskEntity {
     package var requestFileViewerContext: FileViewerViewModelContext {
         FileViewerViewModelContext(
             contentType: originalRequest?.contentType,
@@ -47,7 +47,7 @@ extension NetworkTaskEntity {
 
     /// - returns `nil` if the task is an unknown state. It may happen if the
     /// task is pending, but it's from the previous app run.
-    package func state(in store: LoggerStore?) -> NetworkTaskEntity.State? {
+    package func state(in store: LoggerStore?) -> LANetworkTaskEntity.State? {
         let state = self.state
         if state == .pending, let store, self.session != store.session.id {
             return nil

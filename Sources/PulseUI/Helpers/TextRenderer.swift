@@ -60,12 +60,12 @@ package final class TextRenderer {
         NSAttributedString(string: "\n", attributes: helper.spacerAttributes)
     }
 
-    package func render(_ message: LoggerMessageEntity) {
+    package func render(_ message: LALoggerMessageEntity) {
         string.append(ConsoleFormatter.subheadline(for: message) + "\n", helper.attributes(role: .subheadline, style: .monospacedDigital, width: .condensed, color: .secondaryLabel))
         string.append(message.text + "\n", helper.attributes(role: .body2, color: textColor(for: message.logLevel)))
     }
 
-    package func renderCompact(_ message: LoggerMessageEntity) {
+    package func renderCompact(_ message: LALoggerMessageEntity) {
         var details = ConsoleFormatter.time(for: message.createdAt)
         if let label = ConsoleFormatter.label(for: message) {
             details += "\(ConsoleFormatter.separator)\(label)\(ConsoleFormatter.separator)"
@@ -89,7 +89,7 @@ package final class TextRenderer {
         }
     }
 
-    package func render(_ task: NetworkTaskEntity, content: NetworkContent, store: LoggerStore) {
+    package func render(_ task: LANetworkTaskEntity, content: NetworkContent, store: LoggerStore) {
         if content.contains(.largeHeader) {
             renderLargeHeader(for: task, store: store)
         } else if content.contains(.header) {
@@ -161,7 +161,7 @@ package final class TextRenderer {
         string.deleteCharacters(in: NSRange(location: string.length - 1, length: 1))
     }
 
-    private func renderLargeHeader(for task: NetworkTaskEntity, store: LoggerStore) {
+    private func renderLargeHeader(for task: LANetworkTaskEntity, store: LoggerStore) {
         let status = NetworkRequestStatusCellModel(task: task, store: store)
 
         let suffix = status.isMock ? " (mock)" : ""
@@ -174,7 +174,7 @@ package final class TextRenderer {
         addSpacer()
     }
 
-    private func renderHeader(for task: NetworkTaskEntity, store: LoggerStore) {
+    private func renderHeader(for task: LANetworkTaskEntity, store: LoggerStore) {
         let isTitleColored = task.state == .failure && options.color != .monochrome
         let titleColor = isTitleColored ? UXColor.systemRed : UXColor.secondaryLabel
         let detailsColor = isTitleColored ? UXColor.systemRed : UXColor.label
@@ -186,7 +186,7 @@ package final class TextRenderer {
         addSpacer()
     }
 
-    package func renderCompact(_ task: NetworkTaskEntity, store: LoggerStore) {
+    package func renderCompact(_ task: LANetworkTaskEntity, store: LoggerStore) {
         let isTitleColored = task.state == .failure && options.color != .monochrome
         let titleColor = isTitleColored ? UXColor.systemRed : UXColor.secondaryLabel
         let detailsColor = isTitleColored ? UXColor.systemRed : UXColor.label
@@ -203,7 +203,7 @@ package final class TextRenderer {
         string.append((task.httpMethod ?? "GET") + " " + (task.url ?? "–") + "\n", urlAttributes)
     }
 
-    package func render(_ transaction: NetworkTransactionMetricsEntity) {
+    package func render(_ transaction: LANetworkTransactionMetricsEntity) {
         do {
             let status = StatusLabelViewModel(transaction: transaction)
             let method = transaction.request.httpMethod ?? "GET"
@@ -241,7 +241,7 @@ package final class TextRenderer {
         render(subheadline + "\n", role: .subheadline, color: .secondaryLabel)
     }
 
-    private func renderRequestBody(for task: NetworkTaskEntity) -> NSAttributedString {
+    private func renderRequestBody(for task: LANetworkTaskEntity) -> NSAttributedString {
         if let body = task.requestBody, let string = renderedBodies[body.objectID] {
             return string
         }
@@ -254,7 +254,7 @@ package final class TextRenderer {
         }
     }
 
-    private func renderResponseBody(for task: NetworkTaskEntity) -> NSAttributedString {
+    private func renderResponseBody(for task: LANetworkTaskEntity) -> NSAttributedString {
         if let body = task.responseBody, let string = renderedBodies[body.objectID] {
             return string
         }

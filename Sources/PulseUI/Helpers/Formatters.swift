@@ -51,7 +51,7 @@ extension DateFormatter {
 enum ConsoleFormatter {
     static let separator = " · "
 
-    static func subheadline(for message: LoggerMessageEntity, hasTime: Bool = true) -> String {
+    static func subheadline(for message: LALoggerMessageEntity, hasTime: Bool = true) -> String {
         return [
             hasTime ? time(for: message.createdAt) : nil,
             message.logLevel.name.uppercased(),
@@ -59,7 +59,7 @@ enum ConsoleFormatter {
         ].compactMap { $0 }.joined(separator: separator)
     }
 
-    static func label(for message: LoggerMessageEntity) -> String? {
+    static func label(for message: LALoggerMessageEntity) -> String? {
         let label = message.label
         guard label != "default", !label.isEmpty else {
             return nil
@@ -67,7 +67,7 @@ enum ConsoleFormatter {
         return label.capitalized
     }
 
-    static func subheadline(for task: NetworkTaskEntity, hasTime: Bool = true, store: LoggerStore) -> String {
+    static func subheadline(for task: LANetworkTaskEntity, hasTime: Bool = true, store: LoggerStore) -> String {
         return [
             hasTime ? time(for: task.createdAt) : nil,
             task.httpMethod ?? "GET",
@@ -81,7 +81,7 @@ enum ConsoleFormatter {
     ///
     /// "GET · Pending"
     /// "GET · 21.9 MB · 2.2s"
-    static func details(for task: NetworkTaskEntity) -> String {
+    static func details(for task: LANetworkTaskEntity) -> String {
         return [
             transferSize(for: task),
             duration(for: task),
@@ -99,7 +99,7 @@ enum ConsoleFormatter {
         }
     }
 
-    static func status(for task: NetworkTaskEntity, store: LoggerStore) -> String {
+    static func status(for task: LANetworkTaskEntity, store: LoggerStore) -> String {
         guard let state = task.state(in: store) else {
             return "Unknown"
         }
@@ -113,7 +113,7 @@ enum ConsoleFormatter {
         }
     }
 
-    static func transferSize(for task: NetworkTaskEntity) -> String? {
+    static func transferSize(for task: LANetworkTaskEntity) -> String? {
         guard task.state == .success else {
             return nil
         }
@@ -132,12 +132,12 @@ enum ConsoleFormatter {
         return nil
     }
 
-    static func duration(for task: NetworkTaskEntity) -> String? {
+    static func duration(for task: LANetworkTaskEntity) -> String? {
         guard task.duration > 0 else { return nil }
         return DurationFormatter.string(from: task.duration, isPrecise: false)
     }
 
-    static func progress(for task: NetworkTaskEntity) -> String? {
+    static func progress(for task: LANetworkTaskEntity) -> String? {
         ProgressViewModel.details(for: task)
     }
 }
@@ -160,7 +160,7 @@ package enum StatusCodeFormatter {
 }
 
 package enum ErrorFormatter {
-    package static func shortErrorDescription(for task: NetworkTaskEntity) -> String {
+    package static func shortErrorDescription(for task: LANetworkTaskEntity) -> String {
         if task.errorCode != 0 {
             if task.errorDomain == URLError.errorDomain {
                 return descriptionForURLErrorCode(Int(task.errorCode))

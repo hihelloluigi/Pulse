@@ -66,13 +66,13 @@ package struct NetworkRequestStatusCellModel {
     package let isMock: Bool
     fileprivate let duration: DurationViewModel?
 
-    package init(task: NetworkTaskEntity, store: LoggerStore?) {
+    package init(task: LANetworkTaskEntity, store: LoggerStore?) {
         self.status = StatusLabelViewModel(task: task, store: store)
         self.duration = DurationViewModel(task: task)
         self.isMock = task.isMocked
     }
 
-    package init(transaction: NetworkTransactionMetricsEntity) {
+    package init(transaction: LANetworkTransactionMetricsEntity) {
         status = StatusLabelViewModel(transaction: transaction)
         duration = DurationViewModel(transaction: transaction)
         isMock = false
@@ -99,7 +99,7 @@ private final class DurationViewModel: ObservableObject {
 
     private weak var timer: Timer?
 
-    init(task: NetworkTaskEntity) {
+    init(task: LANetworkTaskEntity) {
         switch task.state {
         case .pending:
             // TODO: Update in sync with the object (creation date is not the same as fetch start date)
@@ -112,14 +112,14 @@ private final class DurationViewModel: ObservableObject {
         }
     }
 
-    init?(transaction: NetworkTransactionMetricsEntity) {
+    init?(transaction: LANetworkTransactionMetricsEntity) {
         guard let duration = transaction.timing.duration else {
             return nil
         }
         self.duration = DurationFormatter.string(from: duration, isPrecise: false)
     }
 
-    private func refreshPendingDuration(task: NetworkTaskEntity) {
+    private func refreshPendingDuration(task: LANetworkTaskEntity) {
         let duration = Date().timeIntervalSince(task.createdAt)
         if duration > 0 {
             self.duration = DurationFormatter.string(from: duration, isPrecise: false)

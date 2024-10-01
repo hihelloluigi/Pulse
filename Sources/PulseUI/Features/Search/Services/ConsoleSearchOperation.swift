@@ -95,7 +95,7 @@ final class ConsoleSearchOperation {
 
     // MARK: Search (LoggerMessageEntity)
 
-    private func _search(_ message: LoggerMessageEntity, parameters: ConsoleSearchParameters) -> [ConsoleSearchOccurrence]? {
+    private func _search(_ message: LALoggerMessageEntity, parameters: ConsoleSearchParameters) -> [ConsoleSearchOccurrence]? {
         guard let term = parameters.term else {
             return []
         }
@@ -116,7 +116,7 @@ final class ConsoleSearchOperation {
 
     // MARK: Search (NetworkTaskEntity)
 
-    private func _search(_ task: NetworkTaskEntity, parameters: ConsoleSearchParameters) -> [ConsoleSearchOccurrence]? {
+    private func _search(_ task: LANetworkTaskEntity, parameters: ConsoleSearchParameters) -> [ConsoleSearchOccurrence]? {
         guard let term = parameters.term else {
             return []
         }

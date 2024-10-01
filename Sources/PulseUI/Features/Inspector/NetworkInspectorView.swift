@@ -11,14 +11,14 @@ import Combine
 
 @available(iOS 16, visionOS 1, macOS 13, *)
 package struct NetworkInspectorView: View {
-    @ObservedObject var task: NetworkTaskEntity
+    @ObservedObject var task: LANetworkTaskEntity
 
     @State private var shareItems: ShareItems?
-    @State private var sharedTask: NetworkTaskEntity?
+    @State private var sharedTask: LANetworkTaskEntity?
     @ObservedObject private var settings: UserSettings = .shared
     @Environment(\.store) private var store
 
-    package init(task: NetworkTaskEntity) {
+    package init(task: LANetworkTaskEntity) {
         self.task = task
     }
 

@@ -8,7 +8,7 @@ import SwiftUI
 import Pulse
 
 struct NetworkCURLCell: View {
-    let task: NetworkTaskEntity
+    let task: LANetworkTaskEntity
 
     var body: some View {
         NavigationLink(destination: destination) {

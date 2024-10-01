@@ -34,7 +34,7 @@ struct MockBadgeView: View {
 }
 
 struct StatusIndicatorView: View {
-    let state: NetworkTaskEntity.State?
+    let state: LANetworkTaskEntity.State?
 
     var body: some View {
         Image(systemName: "circle.fill")

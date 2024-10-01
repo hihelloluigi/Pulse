@@ -8,7 +8,7 @@ import Combine
 import CoreData
 
 package struct ConsoleTaskCell: View {
-    @ObservedObject var task: NetworkTaskEntity
+    @ObservedObject var task: LANetworkTaskEntity
     var isDisclosureNeeded = false
 
     @ScaledMetric(relativeTo: .body) private var fontMultiplier = 1.0
@@ -21,7 +21,7 @@ package struct ConsoleTaskCell: View {
 
     package var highlightedArea: EditableArea?
 
-    package init(task: NetworkTaskEntity, isDisclosureNeeded: Bool = false, highlightedArea: EditableArea? = nil) {
+    package init(task: LANetworkTaskEntity, isDisclosureNeeded: Bool = false, highlightedArea: EditableArea? = nil) {
         self.task = task
         self.isDisclosureNeeded = isDisclosureNeeded
         self.highlightedArea = highlightedArea

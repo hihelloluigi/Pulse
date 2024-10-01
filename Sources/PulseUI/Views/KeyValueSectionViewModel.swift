@@ -18,7 +18,7 @@ package struct KeyValueSectionViewModel {
 }
 
 extension KeyValueSectionViewModel {
-    package static func makeParameters(for request: NetworkRequestEntity) -> KeyValueSectionViewModel {
+    package static func makeParameters(for request: LANetworkRequestEntity) -> KeyValueSectionViewModel {
         var items: [(String, String?)] = [
             ("Cache Policy", request.cachePolicy.description),
             ("Timeout Interval", DurationFormatter.string(from: TimeInterval(request.timeoutInterval), isPrecise: false))
@@ -46,7 +46,7 @@ extension KeyValueSectionViewModel {
         }
     }
 
-    package static func makeTaskDetails(for task: NetworkTaskEntity) -> KeyValueSectionViewModel {
+    package static func makeTaskDetails(for task: LANetworkTaskEntity) -> KeyValueSectionViewModel {
         func format(size: Int64) -> String {
             size > 0 ? ByteCountFormatter.string(fromByteCount: size) : "Empty"
         }
@@ -94,7 +94,7 @@ extension KeyValueSectionViewModel {
         )
     }
 
-    package static func makeErrorDetails(for task: NetworkTaskEntity) -> KeyValueSectionViewModel? {
+    package static func makeErrorDetails(for task: LANetworkTaskEntity) -> KeyValueSectionViewModel? {
         guard task.errorCode != 0, task.state == .failure else {
             return nil
         }
@@ -132,7 +132,7 @@ extension KeyValueSectionViewModel {
         )
     }
 
-    package static func makeDetails(for transaction: NetworkTransactionMetricsEntity) -> [KeyValueSectionViewModel] {
+    package static func makeDetails(for transaction: LANetworkTransactionMetricsEntity) -> [KeyValueSectionViewModel] {
         return [
             makeTiming(for: transaction),
             makeTransferSection(for: transaction),
@@ -142,7 +142,7 @@ extension KeyValueSectionViewModel {
         ].compactMap { $0 }
     }
 
-    private static func makeTiming(for transaction: NetworkTransactionMetricsEntity) -> KeyValueSectionViewModel {
+    private static func makeTiming(for transaction: LANetworkTransactionMetricsEntity) -> KeyValueSectionViewModel {
         let timeFormatter = DateFormatter()
         timeFormatter.locale = Locale(identifier: "en_US")
         timeFormatter.dateFormat = "hh:mm:ss.SSS"
@@ -182,7 +182,7 @@ extension KeyValueSectionViewModel {
         return KeyValueSectionViewModel(title: "Timing", color: .orange, items: items)
     }
 
-    private static func makeTransferSection(for metrics: NetworkTransactionMetricsEntity) -> KeyValueSectionViewModel? {
+    private static func makeTransferSection(for metrics: LANetworkTransactionMetricsEntity) -> KeyValueSectionViewModel? {
         let transferSize = metrics.transferSize
         return KeyValueSectionViewModel(title: "Data Transfer", color: .primary, items: [
             ("Request Headers", formatBytes(transferSize.requestHeaderBytesSent)),
@@ -194,7 +194,7 @@ extension KeyValueSectionViewModel {
         ])
     }
 
-    private static func makeProtocolSection(for metrics: NetworkTransactionMetricsEntity) -> KeyValueSectionViewModel? {
+    private static func makeProtocolSection(for metrics: LANetworkTransactionMetricsEntity) -> KeyValueSectionViewModel? {
         KeyValueSectionViewModel(title: "Protocol", color: .primary, items: [
             ("Network Protocol", metrics.networkProtocol),
             ("Remote Address", metrics.remoteAddress),
@@ -204,7 +204,7 @@ extension KeyValueSectionViewModel {
         ])
     }
 
-    private static func makeSecuritySection(for metrics: NetworkTransactionMetricsEntity) -> KeyValueSectionViewModel? {
+    private static func makeSecuritySection(for metrics: LANetworkTransactionMetricsEntity) -> KeyValueSectionViewModel? {
         guard let suite = metrics.negotiatedTLSCipherSuite,
               let version = metrics.negotiatedTLSProtocolVersion else {
             return nil
@@ -215,7 +215,7 @@ extension KeyValueSectionViewModel {
         ])
     }
 
-    private static func makeMiscSection(for metrics: NetworkTransactionMetricsEntity) -> KeyValueSectionViewModel? {
+    private static func makeMiscSection(for metrics: LANetworkTransactionMetricsEntity) -> KeyValueSectionViewModel? {
         KeyValueSectionViewModel(title: "Characteristics", color: .primary, items: [
             ("Cellular", metrics.isCellular.description),
             ("Expensive", metrics.isExpensive.description),

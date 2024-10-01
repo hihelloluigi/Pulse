@@ -8,13 +8,13 @@ import CoreData
 import Combine
 
 package struct ConsoleMessageCell: View {
-    package let message: LoggerMessageEntity
+    package let message: LALoggerMessageEntity
     package var isDisclosureNeeded = false
 
     @ScaledMetric(relativeTo: .body) private var fontMultiplier = 17.0
     @ObservedObject private var settings: UserSettings = .shared
 
-    package init(message: LoggerMessageEntity, isDisclosureNeeded: Bool = false) {
+    package init(message: LALoggerMessageEntity, isDisclosureNeeded: Bool = false) {
         self.message = message
         self.isDisclosureNeeded = isDisclosureNeeded
     }

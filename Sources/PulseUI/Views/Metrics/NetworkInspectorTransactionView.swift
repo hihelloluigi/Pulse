@@ -61,14 +61,14 @@ struct NetworkInspectorTransactionView: View {
 package final class NetworkInspectorTransactionViewModel: ObservableObject, Identifiable {
     package let id: NSManagedObjectID
     package let title: String
-    package let transaction: NetworkTransactionMetricsEntity
+    package let transaction: LANetworkTransactionMetricsEntity
     package let statusViewModel: NetworkRequestStatusCellModel
     package let timingViewModel: TimingViewModel?
     package let requestViewModel: NetworkRequestInfoCellViewModel
     package let transferSizeViewModel: NetworkInspectorTransferInfoViewModel?
     package let details: () -> NSAttributedString
 
-    package init(transaction: NetworkTransactionMetricsEntity, task: NetworkTaskEntity) {
+    package init(transaction: LANetworkTransactionMetricsEntity, task: LANetworkTaskEntity) {
         self.id = transaction.objectID
         self.title = transaction.fetchType.title
         self.transaction = transaction

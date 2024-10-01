@@ -9,7 +9,7 @@ import Pulse
 
 @available(iOS 16, visionOS 1, macOS 13, *)
 struct NetworkMetricsCell: View {
-    let task: NetworkTaskEntity
+    let task: LANetworkTaskEntity
 
     var body: some View {
         NavigationLink(destination: destinationMetrics) {

@@ -11,7 +11,7 @@ public final class LALoggerSessionEntity: NSManagedObject {
     @NSManaged public var build: String?
 }
 
-public final class LoggerMessageEntity: NSManagedObject {
+public final class LALoggerMessageEntity: NSManagedObject {
     @NSManaged public var createdAt: Date
     @NSManaged public var isPinned: Bool
     @NSManaged public var session: UUID
@@ -22,12 +22,12 @@ public final class LoggerMessageEntity: NSManagedObject {
     @NSManaged public var line: Int32 // Doubles as request state storage to save space
     @NSManaged public var label: String
     @NSManaged public var rawMetadata: String
-    @NSManaged public var task: NetworkTaskEntity?
+    @NSManaged public var task: LANetworkTaskEntity?
 
     public lazy var metadata = { KeyValueEncoding.decodeKeyValuePairs(rawMetadata) }()
 }
 
-public final class NetworkTaskEntity: NSManagedObject {
+public final class LANetworkTaskEntity: NSManagedObject {
     // Primary
     @NSManaged public var createdAt: Date
     @NSManaged public var session: UUID
@@ -71,7 +71,7 @@ public final class NetworkTaskEntity: NSManagedObject {
     ///
     /// - note: The entity is created lazily when the first progress report
     /// is delivered. If no progress updates are delivered, it's never created.
-    @NSManaged public var progress: NetworkTaskProgressEntity?
+    @NSManaged public var progress: LANetworkTaskProgressEntity?
 
     /// Total request duration end date.
     @NSManaged public var duration: Double
@@ -80,10 +80,10 @@ public final class NetworkTaskEntity: NSManagedObject {
 
     // MARK: Details
 
-    @NSManaged public var originalRequest: NetworkRequestEntity?
-    @NSManaged public var currentRequest: NetworkRequestEntity?
-    @NSManaged public var response: NetworkResponseEntity?
-    @NSManaged public var transactions: Set<NetworkTransactionMetricsEntity>
+    @NSManaged public var originalRequest: LANetworkRequestEntity?
+    @NSManaged public var currentRequest: LANetworkRequestEntity?
+    @NSManaged public var response: LANetworkResponseEntity?
+    @NSManaged public var transactions: Set<LANetworkTransactionMetricsEntity>
     @NSManaged var rawMetadata: String?
 
     /// The request body handle.
@@ -97,7 +97,7 @@ public final class NetworkTaskEntity: NSManagedObject {
     /// The `taskDescription` value of `URLSessionTask`.
     @NSManaged public var taskDescription: String?
     /// Associated (technical) message.
-    @NSManaged public var message: LoggerMessageEntity?
+    @NSManaged public var message: LALoggerMessageEntity?
 
     // MARK: Helpers
 
@@ -118,7 +118,7 @@ public final class NetworkTaskEntity: NSManagedObject {
         return error?.error
     }()
 
-    public var orderedTransactions: [NetworkTransactionMetricsEntity] {
+    public var orderedTransactions: [LANetworkTransactionMetricsEntity] {
         transactions.sorted { $0.index < $1.index }
     }
 
@@ -144,18 +144,18 @@ public final class NetworkTaskEntity: NSManagedObject {
 }
 
 /// Indicates current download or upload progress.
-public final class NetworkTaskProgressEntity: NSManagedObject {
+public final class LANetworkTaskProgressEntity: NSManagedObject {
     /// Indicates current download or upload progress.
     @NSManaged public var completedUnitCount: Int64
     /// Indicates current download or upload progress.
     @NSManaged public var totalUnitCount: Int64
 }
 
-public final class NetworkTransactionMetricsEntity: NSManagedObject {
+public final class LANetworkTransactionMetricsEntity: NSManagedObject {
     @NSManaged public var index: Int16
     @NSManaged public var rawFetchType: Int16
-    @NSManaged public var request: NetworkRequestEntity
-    @NSManaged public var response: NetworkResponseEntity?
+    @NSManaged public var request: LANetworkRequestEntity
+    @NSManaged public var response: LANetworkResponseEntity?
     @NSManaged public var networkProtocol: String?
     @NSManaged public var localAddress: String?
     @NSManaged public var remoteAddress: String?
@@ -227,7 +227,7 @@ public final class NetworkTransactionMetricsEntity: NSManagedObject {
     }
 }
 
-public final class NetworkRequestEntity: NSManagedObject {
+public final class LANetworkRequestEntity: NSManagedObject {
     // MARK: Details
 
     @NSManaged public var url: String?
@@ -255,7 +255,7 @@ public final class NetworkRequestEntity: NSManagedObject {
     public lazy var headers: [String: String] = { KeyValueEncoding.decodeKeyValuePairs(httpHeaders) }()
 }
 
-public final class NetworkResponseEntity: NSManagedObject {
+public final class LANetworkResponseEntity: NSManagedObject {
     @NSManaged public var statusCode: Int16
     @NSManaged public var httpHeaders: String
 
@@ -333,10 +333,10 @@ public final class LALoggerBlobHandleEntity: NSManagedObject {
     }
 }
 
-extension LoggerMessageEntity: Identifiable {
+extension LALoggerMessageEntity: Identifiable {
     public var id: NSManagedObjectID { objectID }
 }
 
-extension NetworkTaskEntity: Identifiable {
+extension LANetworkTaskEntity: Identifiable {
     public var id: NSManagedObjectID { objectID }
 }

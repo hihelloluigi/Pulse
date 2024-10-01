@@ -117,7 +117,7 @@ import Combine
     private func prepareForSharing(store: LoggerStore, output: ShareOutput, options: LoggerStore.ExportOptions) async throws -> ShareItems {
         let entities = try await withUnsafeThrowingContinuation { continuation in
             store.backgroundContext.perform {
-                let request = NSFetchRequest<LoggerMessageEntity>(entityName: "\(LoggerMessageEntity.self)")
+                let request = NSFetchRequest<LALoggerMessageEntity>(entityName: "\(LALoggerMessageEntity.self)")
                 request.predicate = options.predicate // important: contains sessions
 
                 let sortDescriptor = NSSortDescriptor(key: "createdAt", ascending: true)

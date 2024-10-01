@@ -25,7 +25,7 @@ struct ConsoleEntityCell: View {
 
 @available(iOS 16, visionOS 1, *)
 private struct _ConsoleMessageCell: View {
-    let message: LoggerMessageEntity
+    let message: LALoggerMessageEntity
 
     @State private var shareItems: ShareItems?
 
@@ -61,9 +61,9 @@ private struct _ConsoleMessageCell: View {
 
 @available(iOS 16, visionOS 1, *)
 private struct _ConsoleTaskCell: View {
-    let task: NetworkTaskEntity
+    let task: LANetworkTaskEntity
     @State private var shareItems: ShareItems?
-    @State private var sharedTask: NetworkTaskEntity?
+    @State private var sharedTask: LANetworkTaskEntity?
     @Environment(\.store) private var store
     @EnvironmentObject private var environment: ConsoleEnvironment
 

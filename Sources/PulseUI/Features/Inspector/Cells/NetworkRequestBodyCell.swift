@@ -33,7 +33,7 @@ struct NetworkRequestBodyCellViewModel {
     let isEnabled: Bool
     let detailsViewModel: NetworkInspectorRequestBodyViewModel
 
-    init(task: NetworkTaskEntity) {
+    init(task: LANetworkTaskEntity) {
         let size = task.requestBodySize
         self.details = size > 0 ? ByteCountFormatter.string(fromByteCount: size) : "Empty"
         self.isEnabled = size > 0

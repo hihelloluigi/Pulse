@@ -52,10 +52,10 @@ public final class LoggerStore: @unchecked Sendable, Identifiable {
 
     // A single task can generate multiple events. This cache dramatically reduces
     // the number of database fetches.
-    private var tasksCache: [UUID: NetworkTaskEntity] = [:]
+    private var tasksCache: [UUID: LANetworkTaskEntity] = [:]
     // There are cached on a per-task level
-    private var requestsCache: [NetworkLogger.Request: NetworkRequestEntity] = [:]
-    private var responsesCache: [NetworkLogger.Response: NetworkResponseEntity] = [:]
+    private var requestsCache: [NetworkLogger.Request: LANetworkRequestEntity] = [:]
+    private var responsesCache: [NetworkLogger.Response: LANetworkResponseEntity] = [:]
 
     /// For testing purposes.
     var makeCurrentDate: () -> Date = { Date() }
@@ -356,7 +356,7 @@ extension LoggerStore {
     }
 
     private func process(_ event: Event.MessageCreated) {
-        let message = LoggerMessageEntity(context: backgroundContext)
+        let message = LALoggerMessageEntity(context: backgroundContext)
         message.createdAt = event.createdAt
         message.level = event.level.rawValue
         message.label = event.label
@@ -376,7 +376,7 @@ extension LoggerStore {
         entity.url = event.originalRequest.url?.absoluteString
         entity.host = event.originalRequest.url.flatMap { $0.getHost() }
         entity.httpMethod = event.originalRequest.httpMethod
-        entity.requestState = NetworkTaskEntity.State.pending.rawValue
+        entity.requestState = LANetworkTaskEntity.State.pending.rawValue
         entity.originalRequest = makeRequest(for: event.originalRequest)
         entity.currentRequest = event.currentRequest.map(makeRequest)
         requestsCache = [:]
@@ -388,7 +388,7 @@ extension LoggerStore {
             return
         }
         let progress = request.progress ?? {
-            let progress = NetworkTaskProgressEntity(context: backgroundContext)
+            let progress = LANetworkTaskProgressEntity(context: backgroundContext)
             request.progress = progress
             return progress
         }()
@@ -405,7 +405,7 @@ extension LoggerStore {
         entity.statusCode = Int32(event.response?.statusCode ?? 0)
         entity.responseContentType = event.response?.contentType?.type
         let isFailure = event.error != nil || event.response?.isSuccess == false
-        entity.requestState = (isFailure ? NetworkTaskEntity.State.failure : .success).rawValue
+        entity.requestState = (isFailure ? LANetworkTaskEntity.State.failure : .success).rawValue
         entity.taskDescription = event.taskDescription
 
         // Populate response/request data
@@ -509,27 +509,27 @@ extension LoggerStore {
         return data
     }
 
-    private func findTask(forTaskId taskId: UUID) -> NetworkTaskEntity? {
+    private func findTask(forTaskId taskId: UUID) -> LANetworkTaskEntity? {
         if let task = tasksCache[taskId] {
             return task
         }
-        return try? backgroundContext.first(NetworkTaskEntity.self) {
+        return try? backgroundContext.first(LANetworkTaskEntity.self) {
             $0.predicate = NSPredicate(format: "taskId == %@", taskId as NSUUID)
         }
     }
 
-    private func findOrCreateTask(for event: NetworkTaskEvent) -> NetworkTaskEntity {
+    private func findOrCreateTask(for event: NetworkTaskEvent) -> LANetworkTaskEntity {
         if let entity = findTask(forTaskId: event.taskId) {
             return entity
         }
         return createTask(for: event)
     }
 
-    private func createTask(for event: NetworkTaskEvent) -> NetworkTaskEntity {
+    private func createTask(for event: NetworkTaskEvent) -> LANetworkTaskEntity {
         if let entity = tasksCache[event.taskId] {
             return entity // Defensive code in case createTask gets called more than once
         }
-        let task = NetworkTaskEntity(context: backgroundContext)
+        let task = LANetworkTaskEntity(context: backgroundContext)
         task.taskId = event.taskId
         task.taskType = event.taskType.rawValue
         task.createdAt = event.createdAt
@@ -539,14 +539,14 @@ extension LoggerStore {
         task.session = session.id
         task.taskDescription = event.taskDescription
 
-        let message = LoggerMessageEntity(context: backgroundContext)
+        let message = LALoggerMessageEntity(context: backgroundContext)
         message.createdAt = event.createdAt
         message.level = Level.debug.rawValue
         message.label = event.label ?? "network"
         message.session = session.id
         message.file = ""
         message.function = ""
-        message.line = Int32(NetworkTaskEntity.State.pending.rawValue)
+        message.line = Int32(LANetworkTaskEntity.State.pending.rawValue)
         message.text = event.originalRequest.url?.absoluteString ?? ""
 
         message.task = task
@@ -557,11 +557,11 @@ extension LoggerStore {
         return task
     }
 
-    private func makeRequest(for request: NetworkLogger.Request) -> NetworkRequestEntity {
+    private func makeRequest(for request: NetworkLogger.Request) -> LANetworkRequestEntity {
         if let entity = requestsCache[request] {
             return entity
         }
-        let entity = NetworkRequestEntity(context: backgroundContext)
+        let entity = LANetworkRequestEntity(context: backgroundContext)
         entity.url = request.url?.absoluteString
         entity.httpMethod = request.httpMethod
         entity.httpHeaders = KeyValueEncoding.encodeKeyValuePairs(request.headers)
@@ -576,19 +576,19 @@ extension LoggerStore {
         return entity
     }
 
-    private func makeResponse(for response: NetworkLogger.Response) -> NetworkResponseEntity {
+    private func makeResponse(for response: NetworkLogger.Response) -> LANetworkResponseEntity {
         if let entity = responsesCache[response] {
             return entity
         }
-        let entity = NetworkResponseEntity(context: backgroundContext)
+        let entity = LANetworkResponseEntity(context: backgroundContext)
         entity.statusCode = Int16(response.statusCode ?? 0)
         entity.httpHeaders = KeyValueEncoding.encodeKeyValuePairs(response.headers)
         responsesCache[response] = entity
         return entity
     }
 
-    private func makeTransaction(at index: Int, transaction: NetworkLogger.TransactionMetrics) -> NetworkTransactionMetricsEntity {
-        let entity = NetworkTransactionMetricsEntity(context: backgroundContext)
+    private func makeTransaction(at index: Int, transaction: NetworkLogger.TransactionMetrics) -> LANetworkTransactionMetricsEntity {
+        let entity = LANetworkTransactionMetricsEntity(context: backgroundContext)
         entity.index = Int16(index)
         entity.rawFetchType = Int16(transaction.fetchType.rawValue)
         entity.request = makeRequest(for: transaction.request)
@@ -765,10 +765,10 @@ extension LoggerStore {
     /// ``NetworkTaskEntity/createdAt`` in the chronological order.
     /// - parameter predicate: By default, `nil`.
     public func messages(
-        sortDescriptors: [SortDescriptor<LoggerMessageEntity>] = [SortDescriptor(\.createdAt, order: .forward)],
+        sortDescriptors: [SortDescriptor<LALoggerMessageEntity>] = [SortDescriptor(\.createdAt, order: .forward)],
         predicate: NSPredicate? = nil
-    ) throws -> [LoggerMessageEntity] {
-        try viewContext.fetch(LoggerMessageEntity.self) {
+    ) throws -> [LALoggerMessageEntity] {
+        try viewContext.fetch(LALoggerMessageEntity.self) {
             $0.sortDescriptors = sortDescriptors.map(NSSortDescriptor.init)
             $0.predicate = predicate
         }
@@ -780,10 +780,10 @@ extension LoggerStore {
     /// ``NetworkTaskEntity/createdAt`` in the chronological order.
     /// - parameter predicate: By default, `nil`.
     public func tasks(
-        sortDescriptors: [SortDescriptor<NetworkTaskEntity>] = [SortDescriptor(\.createdAt, order: .forward)],
+        sortDescriptors: [SortDescriptor<LANetworkTaskEntity>] = [SortDescriptor(\.createdAt, order: .forward)],
         predicate: NSPredicate? = nil
-    ) throws -> [NetworkTaskEntity] {
-        try viewContext.fetch(NetworkTaskEntity.self) {
+    ) throws -> [LANetworkTaskEntity] {
+        try viewContext.fetch(LANetworkTaskEntity.self) {
             $0.sortDescriptors = sortDescriptors.map(NSSortDescriptor.init)
             $0.predicate = predicate
         }
@@ -791,14 +791,14 @@ extension LoggerStore {
 
     /// Deprecated in Pulse 5.1.
     @available(*, deprecated, message: "Replaced with `message(sortDescriptors:predicate)`")
-    public func allMessages() throws -> [LoggerMessageEntity] {
-        try viewContext.fetch(LoggerMessageEntity.self, sortedBy: \.createdAt)
+    public func allMessages() throws -> [LALoggerMessageEntity] {
+        try viewContext.fetch(LALoggerMessageEntity.self, sortedBy: \.createdAt)
     }
 
     /// Deprecated in Pulse 5.1.
     @available(*, deprecated, message: "Replaced with `tasks(sortDescriptors:predicate)`")
-    public func allTasks() throws -> [NetworkTaskEntity] {
-        try viewContext.fetch(NetworkTaskEntity.self, sortedBy: \.createdAt)
+    public func allTasks() throws -> [LANetworkTaskEntity] {
+        try viewContext.fetch(LANetworkTaskEntity.self, sortedBy: \.createdAt)
     }
 
     /// Removes sessions with the given IDs.
@@ -829,7 +829,7 @@ extension LoggerStore {
     }
 
     private func _removeAll() {
-        try? deleteEntities(for: LoggerMessageEntity.fetchRequest())
+        try? deleteEntities(for: LALoggerMessageEntity.fetchRequest())
         try? deleteEntities(for: LALoggerBlobHandleEntity.fetchRequest())
         try? deleteEntities(for: LALoggerSessionEntity.fetchRequest())
         saveEntity(for: session, info: .current)
@@ -1090,7 +1090,7 @@ extension LoggerStore {
         }
 
         // First remove some old messages
-        let messages = try backgroundContext.fetch(LoggerMessageEntity.self, sortedBy: \.createdAt, ascending: false)
+        let messages = try backgroundContext.fetch(LALoggerMessageEntity.self, sortedBy: \.createdAt, ascending: false)
         let count = messages.count
         guard count > 10 else { return } // Sanity check
 
@@ -1105,7 +1105,7 @@ extension LoggerStore {
 
     private func removeMessages(with predicate: NSPredicate) throws {
         // Unlink blobs associated with the requests the store is about to remove
-        let messages = try backgroundContext.fetch(LoggerMessageEntity.self) {
+        let messages = try backgroundContext.fetch(LALoggerMessageEntity.self) {
             $0.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [predicate, NSPredicate(format: "task != NULL")])
         }
         for message in messages {
@@ -1127,7 +1127,7 @@ extension LoggerStore {
         guard currentSize > configuration.blobSizeLimit else {
             return // All good, no need to remove anything
         }
-        let tasks = try backgroundContext.fetch(NetworkTaskEntity.self, sortedBy: \.createdAt) {
+        let tasks = try backgroundContext.fetch(LANetworkTaskEntity.self, sortedBy: \.createdAt) {
             $0.predicate = NSPredicate(format: "requestBody != NULL OR responseBody != NULL")
         }
         let targetSize = Int(Double(configuration.blobSizeLimit) * configuration.trimRatio)
@@ -1183,8 +1183,8 @@ extension LoggerStore {
     private func _info(in context: NSManagedObjectContext, deviceInfo: LoggerStore.Info.DeviceInfo) throws -> Info {
         let databaseAttributes = try Files.attributesOfItem(atPath: databaseURL.path)
 
-        let messageCount = try context.count(for: LoggerMessageEntity.self)
-        let taskCount = try context.count(for: NetworkTaskEntity.self)
+        let messageCount = try context.count(for: LALoggerMessageEntity.self)
+        let taskCount = try context.count(for: LANetworkTaskEntity.self)
         let blobCount = try context.count(for: LALoggerBlobHandleEntity.self)
 
         return Info(

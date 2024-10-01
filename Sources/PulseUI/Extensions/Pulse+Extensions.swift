@@ -9,37 +9,37 @@ import CoreData
 
 package enum LoggerEntity {
     /// Regular log, not task attached.
-    case message(LoggerMessageEntity)
+    case message(LALoggerMessageEntity)
     /// Either a log with an attached task, or a task itself.
-    case task(NetworkTaskEntity)
+    case task(LANetworkTaskEntity)
 
     package init(_ entity: NSManagedObject) {
-        if let message = entity as? LoggerMessageEntity {
+        if let message = entity as? LALoggerMessageEntity {
             if let task = message.task {
                 self = .task(task)
             } else {
                 self = .message(message)
             }
-        } else if let task = entity as? NetworkTaskEntity {
+        } else if let task = entity as? LANetworkTaskEntity {
             self = .task(task)
         } else {
             fatalError("Unsupported entity: \(entity)")
         }
     }
 
-    package var task: NetworkTaskEntity? {
+    package var task: LANetworkTaskEntity? {
         if case .task(let task) = self { return task }
         return nil
     }
 }
 
-extension LoggerMessageEntity {
+extension LALoggerMessageEntity {
     package var logLevel: LoggerStore.Level {
         LoggerStore.Level(rawValue: level) ?? .debug
     }
 }
 
-extension NetworkTaskEntity.State {
+extension LANetworkTaskEntity.State {
     package var tintColor: Color {
         switch self {
         case .pending: return .orange
@@ -101,7 +101,7 @@ private let possibleFormatters: [DateFormatter] = [
 
 #if !os(watchOS)
 
-extension NetworkTaskEntity {
+extension LANetworkTaskEntity {
     package func cURLDescription() -> String {
         guard let request = currentRequest ?? originalRequest,
               let url = request.url else {
@@ -132,7 +132,7 @@ extension NetworkTaskEntity {
 
 #endif
 
-extension NetworkTaskEntity {
+extension LANetworkTaskEntity {
     package struct InfoItem: Identifiable {
         package let id = UUID()
         package let field: ConsoleListDisplaySettings.TaskField
@@ -204,7 +204,7 @@ extension NetworkTaskEntity {
         guard let url else {
             return nil
         }
-        return NetworkTaskEntity.formattedURL(url, components:  settings.components)
+        return LANetworkTaskEntity.formattedURL(url, components:  settings.components)
     }
 
     package static func formattedURL(_ url: String, components displayed: Set<ConsoleListDisplaySettings.URLComponent>) -> String? {

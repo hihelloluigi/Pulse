@@ -9,9 +9,9 @@ import Pulse
 
 @available(iOS 16, macOS 13, visionOS 1, *)
 package struct ConsoleMessageDetailsView: View {
-    package let message: LoggerMessageEntity
+    package let message: LALoggerMessageEntity
 
-    package init(message: LoggerMessageEntity) {
+    package init(message: LALoggerMessageEntity) {
         self.message = message
     }
 
@@ -75,8 +75,8 @@ struct ConsoleMessageDetailsView_Previews: PreviewProvider {
 
 #if DEBUG
 
-package func makeMockMessage() -> LoggerMessageEntity {
-    let entity = LoggerMessageEntity(context: LoggerStore.mock.viewContext)
+package func makeMockMessage() -> LALoggerMessageEntity {
+    let entity = LALoggerMessageEntity(context: LoggerStore.mock.viewContext)
     entity.text = "test"
     entity.createdAt = Date()
     entity.label = "auth"

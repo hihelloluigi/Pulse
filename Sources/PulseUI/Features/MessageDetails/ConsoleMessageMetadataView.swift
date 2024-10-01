@@ -7,9 +7,9 @@ import Pulse
 
 @available(iOS 16, macOS 13, visionOS 1, *)
 struct ConsoleMessageMetadataView: View {
-    let message: LoggerMessageEntity
+    let message: LALoggerMessageEntity
 
-    init(message: LoggerMessageEntity) {
+    init(message: LALoggerMessageEntity) {
         self.message = message
     }
 
@@ -27,7 +27,7 @@ struct ConsoleMessageMetadataView: View {
 }
 
 extension KeyValueSectionViewModel {
-    package static func makeMetadata(for message: LoggerMessageEntity) -> [KeyValueSectionViewModel] {
+    package static func makeMetadata(for message: LALoggerMessageEntity) -> [KeyValueSectionViewModel] {
         let metadataItems: [(String, String?)] = message.metadata
             .sorted(by: { $0.key < $1.key })
             .map { ($0.key, $0.value )}

@@ -81,7 +81,7 @@ extension HARDocument {
         let time: Double
         let timings: Timings?
 
-        init(entity: NetworkTaskEntity, pageId: String) {
+        init(entity: LANetworkTaskEntity, pageId: String) {
             cache = .init()
             connection = "\(entity.orderedTransactions.first?.remotePort ?? .zero)"
             pageref = pageId
@@ -183,7 +183,7 @@ extension HARDocument.Entry {
         let status: Int
         var statusText: String
 
-        init?(_ entity: NetworkTaskEntity?) {
+        init?(_ entity: LANetworkTaskEntity?) {
             if let entity {
                 bodySize = Int(entity.responseBody?.size ?? -1)
                 content = .init(entity.responseBody)

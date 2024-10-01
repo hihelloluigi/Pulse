@@ -676,11 +676,11 @@ public final class RemoteLogger: ObservableObject, RemoteLoggerConnectionDelegat
 
     // MARK: Details
 
-    public func showDetails(for message: LoggerMessageEntity) {
+    public func showDetails(for message: LALoggerMessageEntity) {
         connection?.sendMessage(path: .openMessageDetails, entity: LoggerStore.Event.MessageCreated(message))
     }
 
-    public func showDetails(for task: NetworkTaskEntity) {
+    public func showDetails(for task: LANetworkTaskEntity) {
         connection?.sendMessage(path: .openTaskDetails, entity: LoggerStore.Event.NetworkTaskCompleted(task))
     }
 
