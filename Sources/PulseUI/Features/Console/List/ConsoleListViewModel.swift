@@ -30,7 +30,7 @@ final class ConsoleListViewModel: ConsoleDataSourceDelegate, ObservableObject, C
         }
     }
 
-    @Published private(set) var previousSession: LoggerSessionEntity?
+    @Published private(set) var previousSession: LALoggerSessionEntity?
 
     let events = PassthroughSubject<ConsoleUpdateEvent, Never>()
 
@@ -44,7 +44,7 @@ final class ConsoleListViewModel: ConsoleDataSourceDelegate, ObservableObject, C
     private let store: LoggerStore
     private let environment: ConsoleEnvironment
     private let filters: ConsoleFiltersViewModel
-    private let sessions: ManagedObjectsObserver<LoggerSessionEntity>
+    private let sessions: ManagedObjectsObserver<LALoggerSessionEntity>
     private var dataSource: ConsoleDataSource?
     private var cancellables: [AnyCancellable] = []
     private var filtersCancellable: AnyCancellable?
@@ -88,12 +88,12 @@ final class ConsoleListViewModel: ConsoleDataSourceDelegate, ObservableObject, C
         }
     }
 
-    func buttonShowPreviousSessionTapped(for session: LoggerSessionEntity) {
+    func buttonShowPreviousSessionTapped(for session: LALoggerSessionEntity) {
         filters.criteria.shared.sessions.selection.insert(session.id)
         refreshPreviousSessionButton(sessions: self.sessions.objects)
     }
 
-    private func refreshPreviousSessionButton(sessions: [LoggerSessionEntity]) {
+    private func refreshPreviousSessionButton(sessions: [LALoggerSessionEntity]) {
         let selection = filters.criteria.shared.sessions.selection
         let isDisplayingPrefix = sessions.prefix(selection.count).allSatisfy {
             selection.contains($0.id)

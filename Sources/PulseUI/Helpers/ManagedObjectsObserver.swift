@@ -30,10 +30,10 @@ package final class ManagedObjectsObserver<T: NSManagedObject>: NSObject, NSFetc
     }
 }
 
-extension ManagedObjectsObserver where T == LoggerSessionEntity {
+extension ManagedObjectsObserver where T == LALoggerSessionEntity {
     package static func sessions(for context: NSManagedObjectContext) -> ManagedObjectsObserver {
-        let request = NSFetchRequest<LoggerSessionEntity>(entityName: "\(LoggerSessionEntity.self)")
-        request.sortDescriptors = [NSSortDescriptor(keyPath: \LoggerSessionEntity.createdAt, ascending: false)]
+        let request = NSFetchRequest<LALoggerSessionEntity>(entityName: "\(LALoggerSessionEntity.self)")
+        request.sortDescriptors = [NSSortDescriptor(keyPath: \LALoggerSessionEntity.createdAt, ascending: false)]
 
         return ManagedObjectsObserver(request: request, context: context, cacheName: "com.github.pulse.sessions-cache")
     }

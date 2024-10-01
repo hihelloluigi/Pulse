@@ -212,8 +212,8 @@ public final class LoggerStore: @unchecked Sendable, Identifiable {
         viewContext.userInfo[LoggerBlogDataStore.loggerStoreKey] = LoggerBlogDataStore(self)
 
         if createSession {
-            let latestSession = try? viewContext.first(LoggerSessionEntity.self) {
-                $0.sortDescriptors = [NSSortDescriptor(keyPath: \LoggerSessionEntity.createdAt, ascending: false)]
+            let latestSession = try? viewContext.first(LALoggerSessionEntity.self) {
+                $0.sortDescriptors = [NSSortDescriptor(keyPath: \LALoggerSessionEntity.createdAt, ascending: false)]
             }
             if let session = latestSession, manifest.version > Version(3, 3, 0) {
                 self.session = .init(id: session.id, startDate: session.createdAt)
@@ -260,13 +260,13 @@ public final class LoggerStore: @unchecked Sendable, Identifiable {
     }
 
     private func saveEntity(for session: Session, info: Info.AppInfo) {
-        let existing = try? backgroundContext.first(LoggerSessionEntity.self) {
+        let existing = try? backgroundContext.first(LALoggerSessionEntity.self) {
             $0.predicate = NSPredicate(format: "id == %@", session.id as NSUUID)
         }
         guard existing == nil else { return }
 
         // Start a new session
-        let entity = LoggerSessionEntity(context: backgroundContext)
+        let entity = LALoggerSessionEntity(context: backgroundContext)
         entity.createdAt = session.startDate
         entity.id = session.id
         entity.version = info.version
@@ -810,7 +810,7 @@ extension LoggerStore {
 
     private func _removeSessions(withIDs sessionIDs: Set<UUID>, isInverted: Bool = false) throws {
         try deleteEntities(for: {
-            let request = LoggerSessionEntity.fetchRequest()
+            let request = LALoggerSessionEntity.fetchRequest()
             let predicate = NSPredicate(format: "id IN %@", sessionIDs)
             request.predicate = isInverted ? NSCompoundPredicate(notPredicateWithSubpredicate: predicate) : predicate
             return request
@@ -831,7 +831,7 @@ extension LoggerStore {
     private func _removeAll() {
         try? deleteEntities(for: LoggerMessageEntity.fetchRequest())
         try? deleteEntities(for: LoggerBlobHandleEntity.fetchRequest())
-        try? deleteEntities(for: LoggerSessionEntity.fetchRequest())
+        try? deleteEntities(for: LALoggerSessionEntity.fetchRequest())
         saveEntity(for: session, info: .current)
 
         try? Files.removeItem(at: blobsURL)
@@ -1074,7 +1074,7 @@ extension LoggerStore {
 
     private func removeExpiredMessages() throws {
         let cutoffDate = makeCurrentDate().addingTimeInterval(-configuration.maxAge)
-        let sessionIDs = try backgroundContext.fetch(LoggerSessionEntity.self) {
+        let sessionIDs = try backgroundContext.fetch(LALoggerSessionEntity.self) {
             $0.predicate = NSPredicate(format: "createdAt < %@", cutoffDate as NSDate)
         }.map(\.id)
         if !sessionIDs.isEmpty {

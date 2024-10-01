@@ -71,8 +71,8 @@ package struct ConsoleSessionsPickerView: View {
         }
     }
 
-    private func session(withID id: UUID) -> LoggerSessionEntity? {
-        let request = NSFetchRequest<LoggerSessionEntity>(entityName: String(describing: LoggerSessionEntity.self))
+    private func session(withID id: UUID) -> LALoggerSessionEntity? {
+        let request = NSFetchRequest<LALoggerSessionEntity>(entityName: String(describing: LALoggerSessionEntity.self))
         request.predicate = NSPredicate(format: "id == %@", id as NSUUID)
         request.fetchLimit = 1
         return try? store.viewContext.fetch(request).first

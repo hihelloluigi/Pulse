@@ -15,11 +15,11 @@ struct SessionListView: View {
     @Binding var selection: Set<UUID>
     @Binding var sharedSessions: SelectedSessionsIDs?
 
-    @FetchRequest(sortDescriptors: [NSSortDescriptor(keyPath: \LoggerSessionEntity.createdAt, ascending: false)])
-    private var sessions: FetchedResults<LoggerSessionEntity>
+    @FetchRequest(sortDescriptors: [NSSortDescriptor(keyPath: \LALoggerSessionEntity.createdAt, ascending: false)])
+    private var sessions: FetchedResults<LALoggerSessionEntity>
 
     @State private var filterTerm = ""
-    @State private var groupedSessions: [(Date, [LoggerSessionEntity])] = []
+    @State private var groupedSessions: [(Date, [LALoggerSessionEntity])] = []
 
 #if os(iOS) || os(visionOS)
     @Environment(\.editMode) private var editMode
@@ -85,7 +85,7 @@ struct SessionListView: View {
 #endif
     }
 
-    private func makeHeader(for startDate: Date, sessions: [LoggerSessionEntity]) -> some View {
+    private func makeHeader(for startDate: Date, sessions: [LALoggerSessionEntity]) -> some View {
         HStack {
 #if os(macOS)
             PlainListSectionHeaderSeparator(title: sectionTitleFormatter.string(from: startDate) + " (\(sessions.count))")
@@ -115,7 +115,7 @@ struct SessionListView: View {
     }
 
     @ViewBuilder
-    private func makeCell(for session: LoggerSessionEntity) -> some View {
+    private func makeCell(for session: LALoggerSessionEntity) -> some View {
         ConsoleSessionCell(session: session, isCompact: filterTerm.isEmpty)
             .swipeActions {
                 Button(action: {
@@ -132,7 +132,7 @@ struct SessionListView: View {
             }
     }
 
-    private func getFilteredSessions() -> [LoggerSessionEntity] {
+    private func getFilteredSessions() -> [LALoggerSessionEntity] {
         sessions.filter {
             $0.searchTags.contains(where: {
                 $0.firstRange(of: filterTerm, options: [.caseInsensitive]) != nil
@@ -162,7 +162,7 @@ private let sectionTitleFormatter: DateFormatter = {
 
 @available(macOS 13, *)
 package struct ConsoleSessionCell: View {
-    let session: LoggerSessionEntity
+    let session: LALoggerSessionEntity
     var isCompact = true
 
     @Environment(\.store) private var store
@@ -170,7 +170,7 @@ package struct ConsoleSessionCell: View {
     @Environment(\.editMode) private var editMode
 #endif
 
-    package init(session: LoggerSessionEntity, isCompact: Bool = true) {
+    package init(session: LALoggerSessionEntity, isCompact: Bool = true) {
         self.session = session
         self.isCompact = isCompact
     }

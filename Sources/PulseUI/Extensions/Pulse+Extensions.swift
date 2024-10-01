@@ -57,7 +57,7 @@ extension NetworkTaskEntity.State {
     }
 }
 
-extension LoggerSessionEntity {
+extension LALoggerSessionEntity {
     package var formattedDate: String {
         formattedDate(isCompact: false)
     }

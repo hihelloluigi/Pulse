@@ -4,7 +4,7 @@
 
 import CoreData
 
-public final class LoggerSessionEntity: NSManagedObject {
+public final class LALoggerSessionEntity: NSManagedObject {
     @NSManaged public var createdAt: Date
     @NSManaged public var id: UUID
     @NSManaged public var version: String?
